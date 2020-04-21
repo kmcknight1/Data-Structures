@@ -19,4 +19,4 @@ class Stack:
         return self.storage.remove_from_tail()
 
     def len(self):
-        return self.storage.length
+        return len(self.storage)
