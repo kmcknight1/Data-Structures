@@ -15,6 +15,21 @@ class LRUCache:
         self.storage = {}
         self.DLL = DoublyLinkedList()
 
+    def __str__(self):
+        if self.storage == {}:
+            return
+        else:
+            pairs = []
+            tail = None
+            head = None
+            for i in self.storage:
+                pairs.append(self.storage[i].value)
+                if self.storage[i].next == None:
+                    tail = self.storage[i].value
+                if self.storage[i].prev == None:
+                    head = self.storage[i].value
+            return f"LIMIT: {self.limit} \nCACHE: {pairs} \nTAIL(LRU): {tail} \nHEAD(MRU): {head}"
+
     """
     Retrieves the value associated with the given key. Also
     needs to move the key-value pair to the end of the order
@@ -60,3 +75,20 @@ class LRUCache:
         else:
             self.DLL.add_to_head((key, value))
             self.storage[key] = self.DLL.head
+
+
+cache = LRUCache(4)
+cache.set("a", 1)
+cache.set("b", 2)
+cache.set("c", 3)
+cache.set("d", 4)
+
+print(str(cache))
+
+cache.set("e", 5)
+
+print(str(cache))
+
+cache.set("c", 6)
+
+print(str(cache))
