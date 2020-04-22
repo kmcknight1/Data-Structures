@@ -12,12 +12,20 @@ class LRUCache:
 
     def __init__(self, limit=10):
         self.limit = limit
+        # storage is a dictionary with corresponding keys as they were set
+        # and the value to the key is a NODE, which is in the DLL
+        # i.e. self.storage[key] will point to an actual node
+        # self.storage[key].value will be a tuple, containing the key and value
+        #self.storage[key].value[0] == key
+        #self.storage[key].value[1] == value
+        # self.storage[key].next == next node in the DLL (or None)
+        # self.storage[key].prev == previous node in the DLL (or None)
         self.storage = {}
         self.DLL = DoublyLinkedList()
 
     def __str__(self):
         if self.storage == {}:
-            return
+            return "\nNOTHING IN STORAGE"
         else:
             pairs = []
             tail = None
@@ -28,7 +36,10 @@ class LRUCache:
                     tail = self.storage[i].value
                 if self.storage[i].prev == None:
                     head = self.storage[i].value
-            return f"LIMIT: {self.limit} \nCACHE: {pairs} \nTAIL(LRU): {tail} \nHEAD(MRU): {head}"
+            return f"\nLIMIT: {self.limit} \nCACHE: {pairs} \nTAIL(LRU): {tail} \nHEAD(MRU): {head}"
+
+    def __len__(self):
+        return len(self.DLL)
 
     """
     Retrieves the value associated with the given key. Also
@@ -39,8 +50,8 @@ class LRUCache:
     """
 
     def get(self, key):
-        # get the value
-        # move it to the tail of the list
+        # if in storage, get the value
+        # move it to the head of the list
         # return the value
         if key not in self.storage:
             return None
@@ -66,24 +77,39 @@ class LRUCache:
         # if key already exists, overwrite the value with the new value
         if len(self.DLL) == self.limit:
             if key not in self.storage:
+                # if not in storage, remove storage tail
                 del self.storage[self.DLL.tail.value[0]]
 
-            self.DLL.remove_from_tail()
-            self.DLL.add_to_head((key, value))
-            self.storage[key] = self.DLL.head
+            self.DLL.remove_from_tail()  # remove tail from DLL
+            self.DLL.add_to_head((key, value))  # add new value to head
+            self.storage[key] = self.DLL.head  # add value to storage
 
         else:
             self.DLL.add_to_head((key, value))
             self.storage[key] = self.DLL.head
 
 
+# create instance of LRU, passing in a limit
 cache = LRUCache(4)
+
+# print empty list
+print(str(cache))
+# print the length
+print(len(cache))
+
+# set some key:value pairs
 cache.set("a", 1)
+print(str(cache))
+
 cache.set("b", 2)
+print(str(cache))
+print(len(cache))
+
+# set a couple more
 cache.set("c", 3)
 cache.set("d", 4)
-
 print(str(cache))
+print(len(cache))
 
 cache.set("e", 5)
 
