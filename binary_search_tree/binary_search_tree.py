@@ -1,7 +1,7 @@
-# from dll_stack import Stack
-# from dll_queue import Queue
-# import sys
-# sys.path.append('../queue_and_stack')
+from dll_stack import Stack
+from dll_queue import Queue
+import sys
+sys.path.append('../queue_and_stack')
 
 
 class BinarySearchTree:
@@ -82,22 +82,69 @@ class BinarySearchTree:
         else:
             cb(self.value)
 
-    # DAY 2 Project -----------------------
+    # iterative for_each approach
+    # DEPTH FIRST
 
-    # Print all the values in order from low to high
-    # Hint:  Use a recursive, depth first traversal
+    def iterative_for_each(self, cb):
+        stack = []
+        # add the root of the tree to the stack so the loop will start running
+        stack.append(self)
+
+        # loop as long as the stack still has elements
+        while len(stack) > 0:
+            current_node = stack.pop()
+            # check if the right child exists
+            if current_node.right:
+                stack.append(current_node.right)
+            # check if the left child exists
+            if current_node.left:
+                stack.append(current_node.left)
+            cb(current_node.value)
+
+        # DAY 2 Project -----------------------
+
+        # Print all the values in order from low to high
+        # Hint:  Use a recursive, depth first traversal
+
     def in_order_print(self, node):
-        pass
+        if not node:
+            return
+        self.in_order_print(node.left)
+        print(node.value)
+        self.in_order_print(node.right)
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
+
     def bft_print(self, node):
-        pass
+        queue = Queue()
+        temp_node = None
+
+        queue.enqueue(node)
+
+        while queue.len() > 0:
+            temp_node = queue.dequeue()
+            print(temp_node.value)
+
+            if temp_node.right:
+                queue.enqueue(temp_node.right)
+
+            if temp_node.left:
+                queue.enqueue(temp_node.left)
 
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
     def dft_print(self, node):
-        pass
+        stack = Stack()
+        temp_node = None
+        stack.push(node)
+        while stack.len() > 0:
+            temp_node = stack.pop()
+            print(temp_node.value)
+            if temp_node.right:
+                stack.push(temp_node.right)
+            if temp_node.left:
+                stack.push(temp_node.left)
 
     # STRETCH Goals -------------------------
     # Note: Research may be required
